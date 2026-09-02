@@ -8,7 +8,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Python 依赖
-COPY requirements.txt .
+# 构建上下文是项目根目录（docker-compose.yml 里 context: .），
+# 所以 requirements.txt 在根目录而不是 backend/ 下
+COPY requirements.txt ./requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
 # 代码
@@ -23,4 +25,7 @@ HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
 
 EXPOSE 8000
 
-CMD ["python", "backend/main.py"]
+# 必须切到 backend/ 目录再启动，否则 main.py 里的
+# `from config import ...` 会因为找不到模块而启动失败
+WORKDIR /app/backend
+CMD ["python", "main.py"]
