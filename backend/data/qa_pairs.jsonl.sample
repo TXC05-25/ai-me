@@ -1,0 +1,10 @@
+{"question": "请用 30 秒介绍一下你自己", "answer": "建议用第一人称，覆盖：毕业时间 + 学校 + 当前在做 + 1-2 个最有代表性的项目/技能 + 一句亮点。控制在 100-150 字。", "intent": "profile_qa"}
+{"question": "你做过最复杂的项目是什么？", "answer": "用 STAR 法则：Situation（背景）+ Task（目标）+ Action（你做了什么，含技术细节）+ Result（可量化结果）。", "intent": "project_detail"}
+{"question": "你的优势是什么？", "answer": "列 3-5 个具体优势，每个配 1 个例子。建议组合：技术能力 + 学习速度 + 协作能力 + 产品思维。", "intent": "profile_qa"}
+{"question": "你的劣势是什么？", "answer": "诚实但不死：列 1-2 个真实可改进的点，但说明你已经在做什么来补齐。", "intent": "profile_qa"}
+{"question": "为什么选择 LLM 应用方向？", "answer": "结合个人兴趣 + 技术趋势 + 自身定位 + 未来规划。", "intent": "profile_qa"}
+{"question": "你最熟悉的技术栈是什么？", "answer": "按熟练度排序：主力 / 熟悉 / 了解。每个配一个具体使用场景。", "intent": "skill_assessment"}
+{"question": "你这个项目最难的技术点是什么？", "answer": "选 1-2 个真正卡过你、让你查了几天文档的问题。讲清楚：问题是什么、为什么难、你最终怎么解决的。", "intent": "project_detail"}
+{"question": "如果让你重新设计这个项目，你会怎么改？", "answer": "诚实地说出当前架构的不足 + 你会怎么改进。可以提到性能、可维护性、可扩展性。", "intent": "project_detail"}
+{"question": "你平时怎么学习新技术？", "answer": "可参考：官方文档 + 写 demo + 看开源代码 + 写技术博客 + 参与社区。给出你自己的实际例子。", "intent": "meta_question"}
+{"question": "你有什么想问我的？", "answer": "准备 2-3 个有质量的问题：团队技术栈 / 业务方向 / 成长路径 / 项目挑战。避免问薪资、福利这类。", "intent": "meta_question"}

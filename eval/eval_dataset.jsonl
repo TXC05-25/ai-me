@@ -1,0 +1,20 @@
+{"question": "请介绍一下你自己", "ground_truth": "候选人 27 届本科应届毕业生，目前在 AI Agent 初创公司实习，专注 LLM 应用工程。在实习中做 RAG 和 Agent 系统，从架构到落地全栈。基础扎实（GPA 3.7+），学习速度快。最近做的 AI-Me 项目是一个 AI 数字分身作品集。"}
+{"question": "你做过最复杂的项目是什么？", "ground_truth": "AI-Me（当前项目）。包含 5 类意图路由、3 路并发混合检索、⟪n⟫ 引用标注、LangSmith 追踪、RAGAS 评估。之前实习中也做过公司级 RAG 系统，但主要是负责部分模块；AI-Me 是独立完成的最完整的项目。"}
+{"question": "你的技术栈是什么？", "ground_truth": "Python / FastAPI / LangChain / LangGraph / Milvus Lite / PostgreSQL / Docker / LangSmith。LLM 方向深入 RAG 全栈、Agent 设计、Prompt Engineering。"}
+{"question": "你在实习中做了什么？", "ground_truth": "在 AI Agent 初创公司做 LLM 应用工程：参与 RAG 检索流水线搭建，独立负责 Agent 工具调用层设计，引入 LangSmith 追踪，编写团队 LLM 开发规范文档。"}
+{"question": "为什么选择 LLM 应用方向？", "ground_truth": "1) 技术前沿；2) 工程价值大，能直接落地业务；3) 个人兴趣，从大二开始折腾；4) 就业市场缺口大。不做预训练因为对工程落地更感兴趣，应用层创新空间也很大。"}
+{"question": "FlashAttention 的原理是什么？", "ground_truth": "FlashAttention 利用 GPU SRAM 分块计算注意力，避免存储 N×N 矩阵；分块（tiling）+ 重计算（recomputation）；解决长序列显存爆炸问题；FlashAttention-2 进一步优化线程调度。"}
+{"question": "GQA 比 MQA 好在哪？", "ground_truth": "GQA 是 MHA 和 MQA 的折中：MQA 全部头共享 K/V 丢失太多信息，MHA 显存太大。GQA 分组共享（如 32 Q 头分 8 组），质量损失小，显存大幅压缩。Llama3 / Qwen2 都用 GQA。"}
+{"question": "RAG 召回率低怎么排查？", "ground_truth": "排查顺序：1) query 是否合理（口语化 / 指代）—— 加 query rewrite；2) embedding 模型选择；3) chunk 是否合理；4) 加 BM25 兜底；5) 加 Rerank；6) 加 query 衍生。"}
+{"question": "Agent 和 RAG 是什么关系？", "ground_truth": "RAG 是 Agent 的一个工具（检索工具）。RAG 系统不是 Agent，只是固定的检索 + 生成流程；真正的 Agent 能根据用户问题动态决定调用哪些工具。ReAct 是典型的 Agent 模式：Reason + Act 循环。"}
+{"question": "你为什么做这个 AI-Me 项目？", "ground_truth": "核心理念『项目本身就是最好的简历』。1) 差异化：让面试官用对话立体了解候选人；2) 元能力展示：项目本身证明工程能力；3) 节约双方时间；4) 个人兴趣。"}
+{"question": "这个项目用了什么技术栈？", "ground_truth": "后端：FastAPI + LangGraph + Milvus Lite + MiniMax abab + BGE-Reranker；前端：纯静态 HTML + TailwindCSS；可观测性：LangSmith；部署：Docker Compose。"}
+{"question": "你的薪资期望是多少？", "ground_truth": "校招 offer 看综合发展。base 30k-50k × 14-16 个月（按公司规模和城市）；如果是顶级 AI 公司，月薪不是首要考量；具体数字看公司。"}
+{"question": "你的职业规划是什么？", "ground_truth": "短期：深耕 LLM 应用工程，成为模块 owner，补算法深度。中期：独立负责项目，在细分领域形成影响力。长期：成为大模型应用方向资深专家，或者转向技术管理。先技术深度，后技术广度，不过早转管理。"}
+{"question": "你能用英文面试吗？", "ground_truth": "可以。CET-6 500+ 分，能流畅阅读英文技术文档，能用英文进行技术面试。如果岗位要求英文工作环境，准备 1-2 周可以适应。"}
+{"question": "你有什么缺点？", "ground_truth": "1) 工程经验不足（少 2-3 年实战，跟 senior 学习）；2) 算法深度不够（Transformer 原理懂，没改过框架源码，读 vLLM 源码）；3) 业务理解浅（主动问 PM 了解业务全貌）；4) 可能过于关注技术（先问这能给用户带来什么）。"}
+{"question": "你了解 LangGraph 吗？", "ground_truth": "LangGraph 是 LangChain 出的状态图编排框架。核心：State（TypedDict 共享状态）、Node（节点函数）、Edge（边）、Conditional Edge（条件边）。比 LCEL 更适合复杂 Agent 流程，支持循环、子图、Human-in-the-loop、持久化。"}
+{"question": "Tool Calling 是什么？", "ground_truth": "Tool Calling 是 LLM 调用外部函数的机制。流程：1) 用 JSON Schema 定义工具；2) LLM 决策调用哪个函数、传什么参数；3) 执行工具；4) LLM 总结。是 Agent 时代的核心能力。"}
+{"question": "讲一下 PagedAttention 的原理", "ground_truth": "PagedAttention 借鉴操作系统虚拟内存分页思想，把 KV Cache 切分为固定大小的页块，KV 向量存放在不连续的 GPU 内存页中。消除 KV 显存碎片，提升显存利用率。是 vLLM 高并发的核心底层机制。"}
+{"question": "讲一下 KV Cache 是什么", "ground_truth": "自回归生成时，每步把已计算的 K/V 缓存下来，避免重复计算。KV Cache 显存随序列长度线性增长。Prompt Cache 是 KV Cache 的子集，缓存固定前缀（如系统提示词）。"}
+{"question": "你平时怎么学习新技术的？", "ground_truth": "1) 项目驱动，遇到问题再学；2) 官方文档 + 论文；3) 动手实践，看完就写 demo；4) 写技术博客整理思路；5) 看优秀开源项目源码；6) 社区交流。校招生学习速度是核心竞争力。"}

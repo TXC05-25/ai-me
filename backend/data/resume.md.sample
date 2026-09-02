@@ -1,0 +1,84 @@
+# YOUR_NAME
+
+> **求职意向**：YOUR_TITLE
+> **联系方式**：YOUR_EMAIL@example.com
+> **GitHub**：<https://github.com/YOUR_GITHUB_USERNAME>
+
+---
+
+## 📌 个人简介
+
+用 3-5 句话向面试官介绍自己。建议覆盖：
+- 毕业时间 / 学校 / 专业
+- 当前在做什么（实习 / 项目）
+- 技术方向（1-2 个关键词）
+- 一句能体现你独特价值的话
+
+---
+
+## 🎓 教育背景
+
+### YOUR_SCHOOL · YOUR_MAJOR 本科
+**2023.09 - 2027.06（预计）**
+
+**核心课程**：课程 1、课程 2、课程 3
+
+**GPA / 排名**：（可选）
+
+---
+
+## 💼 实习经历
+
+### YOUR_COMPANY · YOUR_ROLE
+**2026.07 - 至今** · YOUR_CITY
+
+**项目**：
+- 项目 1 简介
+- 项目 2 简介
+
+**收获**：
+- 收获 1
+- 收获 2
+
+---
+
+## 🚀 项目经历
+
+> 详细描述见 `projects/*.md`，这里只放摘要。
+
+### YOUR_PROJECT_NAME
+**时间** · **角色**
+
+- 项目亮点 1
+- 项目亮点 2
+- 项目亮点 3
+
+📂 源码：<https://github.com/YOUR_GITHUB_USERNAME/YOUR_REPO>
+💻 技术栈：Tech1 / Tech2 / Tech3
+
+---
+
+## 🛠️ 技能栈
+
+| 类别 | 技能 |
+|---|---|
+| LLM | DeepSeek-V3 / Qwen / Prompt Engineering |
+| RAG | 向量库 / 混合检索 / Rerank |
+| Agent | LangChain / LangGraph / Tool Calling |
+| 后端 | Python / FastAPI / asyncio |
+| 前端 | HTML / CSS / JavaScript |
+| 工具 | Git / Docker / Linux |
+
+---
+
+## 🏆 荣誉奖项
+
+- 奖项 1（2024-2025）
+- 奖项 2（2023-2024）
+
+---
+
+## 📮 联系方式
+
+- 邮箱：YOUR_EMAIL@example.com
+- GitHub：<https://github.com/YOUR_GITHUB_USERNAME>

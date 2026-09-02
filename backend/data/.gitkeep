@@ -1,0 +1,10 @@
+# 此目录用于存放候选人个人数据
+#
+# 仓库里只提供 *.sample 模板（脱敏骨架），真实数据请在 clone 后：
+#   cp profile.yaml.sample profile.yaml
+#   cp resume.md.sample resume.md
+#   cp qa_pairs.jsonl.sample qa_pairs.jsonl
+#   cp projects/ai_me.md.sample projects/ai_me.md
+#   ... 按需复制并填入你自己的内容
+#
+# 这些文件名已在 .gitignore 中排除，不会被 git 追踪。

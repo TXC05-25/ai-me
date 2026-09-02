@@ -1,0 +1,145 @@
+# =====================================================
+# 候选人结构化信息 · 模板 (脱敏版)
+# =====================================================
+# 这是仓库提供的样例骨架，所有值都用占位符，请 clone 后：
+#   cp profile.yaml.sample profile.yaml
+# 然后把下面的 YOUR_* 替换成你自己的真实信息。
+# AI 会自动识别 snake_case 字段并友好展示。
+
+name: YOUR_NAME
+title: YOUR_TITLE  # 例如: AI 应用开发工程师（Python 方向）
+current_status: YOUR_STATUS  # 例如: 2027 届本科应届毕业生 · 2026.07 起在 XXX 实习
+available_from: YOUR_AVAILABLE_FROM  # 例如: 2027-07-01（接受 2026 暑期实习留用）
+
+# ===== 基本联系方式 =====
+email: YOUR_EMAIL@example.com
+phone: ""  # 建议留空，避免被爬
+github: https://github.com/YOUR_GITHUB_USERNAME
+linkedin: ""
+personal_site: ""
+blog: ""
+
+# ===== 教育背景 =====
+education:
+  - school: YOUR_SCHOOL
+    degree: YOUR_DEGREE  # 例如: 学士（在读）
+    major: YOUR_MAJOR
+    period: 2023.09 - 2027.06（预计）
+    gpa: ""
+    ranking: ""
+    status: 预计 2027 年 6 月毕业
+    note: 简要说明学校特色或亮点
+    courses:
+      - Python 程序设计
+      - 数据结构与算法
+      - 计算机网络
+
+# ===== 实习经历 =====
+experience:
+  - company: YOUR_COMPANY
+    role: YOUR_ROLE  # 例如: AI 应用开发实习生
+    period: 2026.07 - 至今
+    location: YOUR_CITY
+    summary: 一句话说明你在这家公司做什么
+    highlights:
+      - 实习亮点 1
+      - 实习亮点 2
+      - 实习亮点 3
+    tech_stack:
+      - 技术栈 1
+      - 技术栈 2
+
+# ===== 项目经历（详细描述在 projects/ 目录）=====
+projects:
+  - id: project_1_id
+    name: YOUR_PROJECT_NAME
+    period: 2026.07 - 至今
+    role: 主导开发
+    summary: 一句话项目简介
+    tech_stack: [Tech1, Tech2, Tech3]
+    repo: ""  # GitHub 链接（如有）
+    tags: [RAG, 工程化]
+    metrics:
+      - 关键指标 1
+      - 关键指标 2
+
+# ===== 技能栈（按熟练度排序）=====
+skills:
+  llm_application:
+    - 熟悉主流大模型 API 接入
+    - LLM Engineering 设计与优化
+    - Prompt Engineering（System Prompt / Few-shot / CoT）
+
+  rag:
+    - 文档切分 / 预处理
+    - Embedding 模型选择与优化
+    - 向量存储与检索
+    - 混合检索（向量 + BM25 + 关键词）
+    - Rerank（BGE-Reranker / Cohere）
+
+  agent:
+    - Agent 开发原理
+    - 基于 LangChain 的 Tool Calling Agent
+    - ReAct / Plan-and-Execute / Reflexion 模式
+    - LangGraph 状态图编排
+
+  backend:
+    - Python 后端开发
+    - FastAPI / Flask / Django
+    - RESTful API 设计
+    - 异步编程（asyncio）
+    - 流式 SSE 输出
+
+  frontend:
+    - HTML / CSS / JavaScript
+    - Vue 框架基础
+    - 基础页面开发
+
+  devops:
+    - Git / GitHub
+    - VS Code / Cursor
+    - Docker
+    - Linux Shell
+
+  databases:
+    - MySQL
+    - Milvus / ChromaDB（向量库）
+
+
+# ===== 校园经历 =====
+campus_experience:
+  - org: YOUR_ORG
+    role: YOUR_ROLE
+    period: 2023.09 - 2024.07
+    summary: 一句话描述
+    highlights:
+      - 亮点 1
+      - 亮点 2
+
+# ===== 荣誉奖项 =====
+awards:
+  - name: AWARD_NAME
+    period: 2023-2024
+    level: 校级
+
+# ===== 语言能力 =====
+languages:
+  - name: 中文
+    level: 母语
+  - name: 英语
+    level: CET-4（能阅读英文技术文档）
+
+# ===== 兴趣爱好 =====
+interests:
+  - 兴趣 1
+  - 兴趣 2
+
+# ===== 求职偏好 =====
+preferences:
+  role: [AI 应用开发, LLM 应用工程师, Python 后端工程师]
+  industry: [AI, SaaS, 互联网]
+  company_stage: [A 轮 - D 轮 AI 公司, 大厂 AI 部门]
+  location: [杭州, 上海, 北京, 深圳]
+  salary_range: 校招 offer 面议
+  internship_to_fulltime: 接受实习转正 / 暑期实习留用
+  start_date: 2027 年 7 月（毕业入职）

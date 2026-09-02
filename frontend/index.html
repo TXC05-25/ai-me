@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI-Me · 数字分身</title>
+  <meta name="description" content="谭修诚 的 AI 数字分身 —— 让面试官用对话快速了解我" />
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Markdown -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.0/marked.min.js"></script>
+
+  <!-- 代码高亮 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
+
+  <!-- 内联 SVG 图标 -->
+  <script>
+    const SVG_ICONS = {
+      sun: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>',
+      moon: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+      send: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>',
+      stop: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="6" width="12" height="12" rx="1"/></svg>',
+      plus: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+      download: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>',
+      github: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+      mail: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+      arrow: '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>',
+      file: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+      bot: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/></svg>',
+      zap: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      code: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>',
+      briefcase: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>',
+      user: '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+    };
+
+    function injectSvgIcons() {
+      document.querySelectorAll('[data-svg]').forEach(el => {
+        const name = el.getAttribute('data-svg');
+        if (SVG_ICONS[name]) {
+          el.innerHTML = SVG_ICONS[name];
+          const svg = el.querySelector('svg');
+          if (svg) {
+            svg.style.display = 'inline-block';
+            svg.style.verticalAlign = 'middle';
+          }
+        }
+      });
+    }
+    window.injectSvgIcons = injectSvgIcons;
+    window.SVG_ICONS = SVG_ICONS;
+  </script>
+
+  <style>
+    :root { --accent: #5b5fc7; --accent-dark: #4c50b8; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 3px; }
+    .dark ::-webkit-scrollbar-thumb { background: #3f3f46; }
+
+    .bubble-user {
+      background: #f4f4f5; color: #18181b;
+      border-radius: 18px; padding: 10px 16px;
+      max-width: 80%; line-height: 1.6;
+    }
+    .dark .bubble-user { background: #27272a; color: #fafafa; }
+
+    .bubble-ai { color: inherit; max-width: 100%; line-height: 1.7; }
+    .bubble-ai p { margin: 8px 0; }
+    .bubble-ai p:first-child { margin-top: 0; }
+    .bubble-ai p:last-child { margin-bottom: 0; }
+    .bubble-ai ul, .bubble-ai ol { margin: 8px 0; padding-left: 24px; }
+    .bubble-ai li { margin: 4px 0; }
+    .bubble-ai strong { font-weight: 600; }
+    .bubble-ai code:not(pre code) {
+      background: rgba(91, 95, 199, 0.08); color: #5b5fc7;
+      padding: 1px 6px; border-radius: 4px; font-size: 0.9em;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+    .bubble-ai pre {
+      background: #1e1e1e; color: #e4e4e4;
+      padding: 12px 16px; border-radius: 8px;
+      overflow-x: auto; margin: 8px 0; font-size: 13px;
+    }
+
+    .citation { color: var(--accent); font-weight: 600; font-size: 11px; cursor: pointer; text-decoration: none; margin: 0 1px; }
+    .citation:hover { text-decoration: underline; }
+
+    /* ===== AI 消息结构 ===== */
+    .msg-ai {
+      background: white;
+      border: 1px solid #e4e4e7;
+      border-radius: 16px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .dark .msg-ai { background: #18181b; border-color: #27272a; }
+
+    .msg-ai-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .msg-avatar {
+      width: 28px; height: 28px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #5b5fc7, #8b5cf6);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: bold;
+      flex-shrink: 0;
+    }
+    .msg-ai-name { font-size: 13px; font-weight: 600; line-height: 1.2; }
+    .msg-ai-status { font-size: 11px; color: #a1a1aa; margin-top: 2px; }
+
+    /* ===== 思考过程区 ===== */
+    .msg-thinking {
+      background: #f7f7f8;
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 12px;
+      font-size: 12px;
+      max-height: 400px;
+      overflow: hidden;
+      transition: opacity 0.3s ease, max-height 0.3s ease, padding 0.3s, margin-bottom 0.3s;
+    }
+    .msg-thinking.hiding {
+      opacity: 0 !important;
+      max-height: 0 !important;
+      padding-top: 0 !important;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+      border-width: 0 !important;
+    }
+    .dark .msg-thinking { background: #18181b; }
+
+    .msg-thinking-header {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #71717a;
+      font-family: 'Menlo', 'Monaco', monospace;
+      margin-bottom: 6px;
+    }
+    .dark .msg-thinking-header { color: #a1a1aa; }
+
+    .thinking-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #5b5fc7;
+      animation: thinking-bounce 1.4s infinite ease-in-out;
+    }
+    .thinking-dot:nth-child(2) { animation-delay: 0.2s; }
+    .thinking-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes thinking-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+      30% { transform: translateY(-3px); opacity: 1; }
+    }
+    .thinking-text { margin-left: 6px; font-size: 11px; }
+
+    .msg-thinking-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .msg-thinking-step {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #52525b;
+      font-size: 11px;
+      padding: 2px 0;
+      animation: fade-in 0.3s;
+    }
+    .dark .msg-thinking-step { color: #a1a1aa; }
+    .step-icon {
+      width: 14px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    @keyframes fade-in { from { opacity: 0; transform: translateX(-3px); } to { opacity: 1; transform: translateX(0); } }
+
+    /* ===== 回答内容（首行缩进 2 字符）===== */
+    .msg-content {
+      font-size: 14px;
+      line-height: 1.85;
+      color: #18181b;
+      word-break: break-word;
+    }
+    .dark .msg-content { color: #fafafa; }
+    .msg-content > *:first-child { text-indent: 2em; }  /* 首行缩进 */
+    .msg-content p { margin: 8px 0; }
+    .msg-content p:first-child { margin-top: 0; }
+    .msg-content p:last-child { margin-bottom: 0; }
+    .msg-content ul, .msg-content ol { margin: 8px 0; padding-left: 24px; }
+    .msg-content li { margin: 4px 0; }
+    .msg-content h1, .msg-content h2, .msg-content h3 {
+      font-weight: 600; margin: 12px 0 8px;
+    }
+    .msg-content h1 { font-size: 18px; }
+    .msg-content h2 { font-size: 16px; }
+    .msg-content h3 { font-size: 15px; }
+    .msg-content strong { font-weight: 600; color: #5b5fc7; }
+    .msg-content code:not(pre code) {
+      background: rgba(91, 95, 199, 0.08);
+      color: #5b5fc7;
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+    .msg-content pre {
+      background: #1e1e1e;
+      color: #e4e4e4;
+      padding: 12px 16px;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 10px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .msg-content blockquote {
+      border-left: 3px solid #5b5fc7;
+      padding-left: 12px;
+      margin: 8px 0;
+      color: #52525b;
+      font-style: italic;
+    }
+    .dark .msg-content blockquote { color: #a1a1aa; }
+
+    /* 打字动画 */
+    .typing { display: inline-flex; gap: 4px; }
+    .typing span {
+      width: 6px; height: 6px;
+      background: #a1a1aa;
+      border-radius: 50%;
+      animation: typing-bounce 1.4s infinite ease-in-out;
+    }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing-bounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    /* ===== 底部徽章 ===== */
+    .msg-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      padding-top: 10px;
+      border-top: 1px dashed #e4e4e7;
+    }
+    .dark .msg-footer { border-top-color: #27272a; }
+    .msg-footer.hidden { display: none; }
+
+    .intent-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 500;
+      background: linear-gradient(135deg, rgba(91, 95, 199, 0.12), rgba(139, 92, 246, 0.12));
+      color: #5b5fc7;
+      border: 1px solid rgba(91, 95, 199, 0.25);
+    }
+    .dark .intent-badge {
+      background: linear-gradient(135deg, rgba(91, 95, 199, 0.2), rgba(139, 92, 246, 0.2));
+      color: #a5a8f0;
+      border-color: rgba(91, 95, 199, 0.35);
+    }
+
+    .timing-group {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: #a1a1aa;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+    .timing-group > span {
+      background: #f4f4f5;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .dark .timing-group > span { background: #27272a; color: #a1a1aa; }
+
+    /* 用户气泡 */
+    .msg-user {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
+    .msg-user .bubble-user {
+      background: var(--accent);
+      color: white;
+      border-radius: 18px 18px 4px 18px;
+      padding: 10px 16px;
+      max-width: 80%;
+      font-size: 14px;
+      line-height: 1.6;
+      box-shadow: 0 1px 2px rgba(91, 95, 199, 0.15);
+    }
+
+    /* 旧的 thinking-block 隐藏（已迁移到 msg-thinking）*/
+    .thinking-block {
+      display: none !important;
+    }
+    .timing-badge {
+      display: none !important;
+    }
+
+    .suggestion-card {
+      padding: 10px 14px; background: white;
+      border: 1px solid #e4e4e7; border-radius: 12px;
+      font-size: 12px; cursor: pointer;
+      transition: all 0.15s; text-align: left;
+    }
+    .suggestion-card:hover {
+      border-color: var(--accent);
+      background: rgba(91, 95, 199, 0.04);
+    }
+    .dark .suggestion-card { background: #18181b; border-color: #27272a; }
+    .dark .suggestion-card:hover {
+      border-color: var(--accent);
+      background: rgba(91, 95, 199, 0.08);
+    }
+
+    .project-card {
+      padding: 12px; background: white;
+      border: 1px solid #e4e4e7; border-radius: 10px;
+      cursor: pointer; transition: all 0.15s;
+      display: block;
+    }
+    .project-card:hover {
+      border-color: var(--accent);
+      background: rgba(91, 95, 199, 0.04);
+    }
+    .dark .project-card { background: #18181b; border-color: #27272a; }
+    .dark .project-card:hover {
+      border-color: var(--accent);
+      background: rgba(91, 95, 199, 0.08);
+    }
+
+    .typing-dot {
+      display: inline-block; width: 6px; height: 6px;
+      background: #a1a1aa; border-radius: 50%;
+      margin: 0 2px; animation: typing 1.4s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes typing {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+      30% { transform: translateY(-6px); opacity: 1; }
+    }
+
+    .input-shell {
+      background: white; border: 1px solid #e4e4e7;
+      border-radius: 24px; transition: border-color 0.15s;
+    }
+    .input-shell:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(91, 95, 199, 0.08);
+    }
+    .dark .input-shell { background: #18181b; border-color: #27272a; }
+
+    .tech-badge {
+      display: inline-block; padding: 1px 6px;
+      border-radius: 4px; font-size: 10px;
+      font-family: 'Menlo', 'Monaco', monospace;
+      background: #f4f4f5; color: #52525b;
+      margin-right: 3px; margin-bottom: 2px;
+    }
+    .dark .tech-badge { background: #27272a; color: #a1a1aa; }
+
+    .side-card {
+      padding: 14px; background: white;
+      border: 1px solid #e4e4e7; border-radius: 12px;
+    }
+    .dark .side-card { background: #18181b; border-color: #27272a; }
+
+    .side-card h3 {
+      font-size: 12px; font-weight: 600;
+      color: #71717a; text-transform: uppercase;
+      letter-spacing: 0.05em; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .dark .side-card h3 { color: #a1a1aa; }
+
+    .link-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: 6px 0; font-size: 12px;
+      color: #71717a; transition: color 0.15s;
+    }
+    .link-row:hover { color: var(--accent); }
+    .dark .link-row { color: #a1a1aa; }
+    .dark .link-row:hover { color: #a1a1aa; }
+    .dark .link-row:hover i, .dark .link-row:hover span { color: var(--accent); }
+
+    .latency-row {
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 11px;
+      padding: 4px 0;
+      font-family: 'Menlo', 'Monaco', monospace;
+    }
+    .latency-label { color: #71717a; }
+    .latency-value { color: #18181b; font-weight: 500; }
+    .dark .latency-label { color: #a1a1aa; }
+    .dark .latency-value { color: #fafafa; }
+
+    /* ===== 中栏对话滚动容器：内部滚动，跟随左右栏同高 ===== */
+    .chat-scroll {
+      max-height: none;
+      overflow: visible;
+    }
+    .chat-scroll.scrollable {
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+      scroll-behavior: smooth;
+      border-radius: 10px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* 主区显式高度 = 视口 - 顶部导航 - 底部输入框区域 */
+    .three-col {
+      height: calc(100vh - 200px);
+      min-height: 400px;
+    }
+
+    /* 中栏 cell 用 flex column，让 chat-scroll 撑剩余高度（内部滚动） */
+    .col-center {
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      height: 100%;
+    }
+    .col-center > .chat-scroll.scrollable {
+      flex: 1 1 auto;
+      min-height: 0;
+    }
+
+    /* 占位 spacer：在内容流末尾给页面留 160px 空白，
+       让底部固定的输入框有地方"覆盖"，不会盖住最后一条消息 */
+    .bottom-spacer {
+      height: 160px;
+      width: 100%;
+      pointer-events: none;
+    }
+
+    /* chat-scroll 内部底部的占位 spacer：与底部输入框同高，
+       让 chat-scroll 内部能滚出这段空白，保证最后一条消息 / 推荐追问不被遮挡 */
+    .chat-bottom-spacer {
+      height: 160px;
+      width: 100%;
+      flex-shrink: 0;
+      pointer-events: none;
+    }
+    /* 三列布局 */
+    @media (min-width: 1024px) {
+      .three-col { display: grid; grid-template-columns: 260px 1fr 260px; gap: 20px; }
+    }
+
+    /* 浮层面板 */
+    .overlay-panel {
+      background: white;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 720px;
+      max-height: 85vh;
+      overflow-y: auto;
+      padding: 20px;
+    }
+    .dark .overlay-panel { background: #18181b; }
+    /* 浮层默认隐藏 */
+    .overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 40;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(4px);
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .overlay:not(.hidden) { display: flex; }
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .three-col { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
+      .three-col .col-right { display: none; }
+    }
+  </style>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: { brand: { 50: '#eef0fa', 500: '#5b5fc7', 600: '#4c50b8' } }
+        }
+      }
+    }
+  </script>
+</head>
+
+<body class="text-zinc-900 dark:text-zinc-100">
+
+  <!-- ===== 顶部导航 ===== -->
+  <header class="sticky top-0 z-30 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md border-b border-zinc-200/50 dark:border-zinc-800/50">
+    <div class="max-w-6xl mx-auto px-4 h-12 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-full bg-gradient-to-br from-brand-500 to-purple-600 flex items-center justify-center text-white">
+          <i data-svg="bot" class="w-4 h-4"></i>
+        </div>
+        <span class="text-sm font-medium">AI-Me</span>
+        <span class="text-xs text-zinc-400 hidden sm:inline">· 谭修诚</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <button id="theme-toggle" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800" title="主题">
+          <i data-svg="moon" class="w-4 h-4"></i>
+        </button>
+        <button id="clear-btn" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800" title="新对话">
+          <i data-svg="plus" class="w-4 h-4"></i>
+        </button>
+        <button id="export-btn" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800" title="导出">
+          <i data-svg="download" class="w-4 h-4"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===== 主区（三列布局）===== -->
+  <main class="max-w-6xl mx-auto px-4 pt-6 pb-40 three-col">
+
+    <!-- ============ 左栏：关于我 + 项目 ============ -->
+    <aside class="space-y-4 col-left">
+
+      <!-- 关于我卡片 -->
+      <div class="side-card">
+        <h3><i data-svg="user" class="w-3.5 h-3.5"></i> 关于我</h3>
+        <h1 class="text-lg font-bold mb-1">谭修诚</h1>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-1">
+          27 届本科 · LLM 应用工程师
+        </p>
+        <p class="text-xs text-zinc-400 dark:text-zinc-500 mb-3">
+          实习于 AI Agent 初创
+        </p>
+        <div class="flex flex-wrap">
+          <span class="tech-badge">LangGraph</span>
+          <span class="tech-badge">FastAPI</span>
+          <span class="tech-badge">Milvus</span>
+          <span class="tech-badge">MiniMax</span>
+          <span class="tech-badge">RAGAS</span>
+        </div>
+      </div>
+
+      <!-- 项目卡片 -->
+      <div class="side-card">
+        <h3><i data-svg="code" class="w-3.5 h-3.5"></i> 项目 · <span id="project-count">0</span></h3>
+        <div id="project-grid" class="space-y-2">
+          <div class="animate-pulse h-16 bg-zinc-100 dark:bg-zinc-900 rounded-lg"></div>
+          <div class="animate-pulse h-16 bg-zinc-100 dark:bg-zinc-900 rounded-lg"></div>
+        </div>
+        <a href="resume.pdf" download class="block mt-3 text-xs text-brand-500 hover:underline text-center">
+          �� 下载简历 PDF
+        </a>
+      </div>
+    </aside>
+
+    <!-- ============ 中栏：聊天 ============ -->
+    <section class="flex flex-col col-center min-w-0">
+
+      <!-- 欢迎区 -->
+      <section id="welcome" class="mb-4 fade-in">
+        <h2 class="text-2xl font-bold mb-1">你好，我是 <span class="text-brand-500">谭修诚</span> ��</h2>
+        <p class="text-sm text-zinc-500 dark:text-zinc-400">
+          用对话代替简历，让 AI 替我回答你的疑问
+        </p>
+      </section>
+
+      <!-- 对话滚动容器（内部滚动，包含消息流 + 推荐追问） -->
+      <div id="chat-scroll" class="chat-scroll">
+        <!-- 消息列表 -->
+        <div id="messages" class="space-y-3">
+          <!-- 初始快捷问题卡片 -->
+          <div id="initial-suggestions" class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('请用 30 秒介绍一下你自己')">介绍下你自己</button>
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('你做过最复杂的项目是什么？')">最复杂的项目</button>
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('你在实习中学到了什么？')">实习学到了什么</button>
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('FlashAttention 原理是什么？')">FlashAttention 原理</button>
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('你有什么缺点？')">缺点与改进</button>
+            <button type="button" class="suggestion-card" onclick="window.quickAsk && window.quickAsk('你的职业规划是什么？')">职业规划</button>
+          </div>
+        </div>
+
+        <!-- 推荐追问(跟在消息流末尾，参与 chat-scroll 内部滚动） -->
+        <div id="recommend-area" class="hidden mt-4">
+          <div class="text-xs text-zinc-400 mb-2">继续提问</div>
+          <div id="recommend-list" class="grid grid-cols-1 gap-2"></div>
+        </div>
+
+        <!-- 底部占位 spacer：与底部输入框同高，让 chat-scroll 内部能滚出这段空白，
+             保证最后一条消息 / 推荐追问不被底部固定输入框遮挡 -->
+        <div class="chat-bottom-spacer" aria-hidden="true"></div>
+      </div>
+    </section>
+
+    <!-- ============ 右栏：性能 + 联系 ============ -->
+    <aside class="space-y-4 col-right">
+
+      <!-- 性能指标卡片 -->
+      <div class="side-card">
+        <h3><i data-svg="zap" class="w-3.5 h-3.5"></i> 实时性能</h3>
+        <div class="space-y-1">
+          <div class="latency-row">
+            <span class="latency-label">首 token (TTFT)</span>
+            <span class="latency-value"><span id="ttft-p50">—</span> ms</span>
+          </div>
+          <div class="latency-row">
+            <span class="latency-label">完整响应</span>
+            <span class="latency-value"><span id="total-p50">—</span> ms</span>
+          </div>
+          <div class="latency-row">
+            <span class="latency-label">检索</span>
+            <span class="latency-value"><span id="retrieve-p50">—</span> ms</span>
+          </div>
+          <div class="latency-row">
+            <span class="latency-label">生成</span>
+            <span class="latency-value"><span id="generate-p50">—</span> ms</span>
+          </div>
+          <div class="latency-row border-t border-zinc-200 dark:border-zinc-800 pt-2 mt-2">
+            <span class="latency-label">累计请求</span>
+            <span class="latency-value"><span id="total-requests">0</span></span>
+          </div>
+          <div class="latency-row">
+            <span class="latency-label">生成速率</span>
+            <span class="latency-value"><span id="tokens-per-sec">0</span> tok/s</span>
+          </div>
+        </div>
+        <button id="metrics-btn" class="w-full mt-3 text-xs py-1.5 border border-zinc-200 dark:border-zinc-800 rounded-lg hover:border-brand-500 transition">
+          �� 查看完整性能面板 →
+        </button>
+      </div>
+
+      <!-- RAGAS 雷达图 -->
+      <div class="side-card">
+        <h3><i data-svg="zap" class="w-3.5 h-3.5"></i> RAGAS 评估 (avg <span id="eval-avg">—</span>)</h3>
+        <div class="flex justify-center">
+          <svg id="radar" width="220" height="220" viewBox="-110 -110 220 220"></svg>
+        </div>
+      </div>
+
+      <!-- 联系方式 -->
+      <div class="side-card">
+        <h3><i data-svg="mail" class="w-3.5 h-3.5"></i> 联系方式</h3>
+        <a href="mailto:523589995@qq.com" class="link-row">
+          <i data-svg="mail" class="w-3.5 h-3.5"></i>
+          <span>523589995@qq.com</span>
+        </a>
+        <a href="https://github.com/TanXiuCheng" target="_blank" class="link-row">
+          <i data-svg="github" class="w-3.5 h-3.5"></i>
+          <span>github.com/TanXiuCheng</span>
+        </a>
+        <a href="resume.pdf" download class="link-row">
+          <i data-svg="file" class="w-3.5 h-3.5"></i>
+          <span>下载简历 PDF</span>
+        </a>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ===== 底部占位 spacer（高度 = 输入框区域；让页面滚到底时，固定输入框
+       盖在这段空白上，不会遮挡真实内容） ===== -->
+  <div class="bottom-spacer" aria-hidden="true"></div>
+
+  <!-- ===== 底部输入区（固定居中）===== -->
+  <div class="fixed bottom-0 left-0 right-0 z-30 bg-gradient-to-t from-white via-white to-transparent dark:from-zinc-950 dark:via-zinc-950 pt-6 pb-4">
+    <div class="max-w-3xl mx-auto px-4">
+      <div class="input-shell flex items-end p-2 gap-2">
+        <textarea
+          id="input"
+          rows="1"
+          placeholder="给 AI-Me 发送消息..."
+          class="flex-1 px-3 py-2 bg-transparent text-sm resize-none focus:outline-none max-h-32"
+          style="min-height: 36px;"
+          onkeydown="if(event.key==='Enter' && !event.shiftKey && !window.__isStreaming){event.preventDefault();if(window.sendMessage){window.sendMessage();}else{alert('JS 还没加载完，请稍候');}}"
+        ></textarea>
+        <button
+          id="send-btn"
+          type="button"
+          onclick="if(window.sendMessage){window.sendMessage();}else{alert('JS 还没加载完，请等几秒');}"
+          class="w-9 h-9 rounded-full bg-brand-500 text-white hover:bg-brand-600 transition flex items-center justify-center flex-shrink-0 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <i data-svg="send" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="text-center mt-2">
+        <span class="text-[10px] text-zinc-400">AI-Me · LangGraph + FastAPI + MiniMax + Milvus Lite</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 性能指标浮层 ===== -->
+  <div id="metrics-overlay" class="overlay">
+    <div class="overlay-panel">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="text-lg font-semibold flex items-center gap-2">
+          <i data-svg="zap" class="w-5 h-5"></i> 完整性能面板
+        </h2>
+        <button id="metrics-close" class="p-1 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800">
+          <i data-svg="trash" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <h3 class="text-sm font-medium mb-2">⏱ 延迟 (P50 / P95 / P99)</h3>
+          <div id="latency-table-full" class="space-y-1 text-xs font-mono"></div>
+        </div>
+        <div>
+          <h3 class="text-sm font-medium mb-2">�� RAGAS 雷达图</h3>
+          <div class="flex justify-center">
+            <svg id="radar-full" width="240" height="240" viewBox="-120 -120 240 240"></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/app.js"></script>
+
+  <div id="debug-bar" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fee;border-top:2px solid

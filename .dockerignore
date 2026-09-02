@@ -1,0 +1,55 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+.env
+.env.local
+.env.*.local
+
+# 数据 / 日志（部署时重建）
+backend/vector_db/
+backend/logs/
+*.sqlite3
+*.db
+
+# 测试 / 缓存
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# 临时
+tmp/
+temp/
+*.tmp
+*.bak
+*~
+
+# 测试覆盖
+.coverage
+htmlcov/
+.tox/
+
+# 部署产物
+dist/
+build/
+wheels/
+
+# 文档（可选，看你要不要）
+# docs/
+
+# 用户资料（敏感）
+backend/data/profile.yaml.bak
+backend/data/resume.md.bak

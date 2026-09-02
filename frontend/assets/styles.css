@@ -1,0 +1,55 @@
+/* AI-Me · 自定义样式（补充 Tailwind） */
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* 推荐按钮 hover 效果 */
+.recommend-btn {
+    transition: all 0.2s;
+}
+.recommend-btn:hover {
+    transform: translateX(2px);
+}
+
+/* 代码块样式 */
+.chat-bubble-ai pre {
+    background: #1e293b;
+    color: #e2e8f0;
+    padding: 12px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 8px 0;
+    font-size: 12px;
+}
+.dark .chat-bubble-ai pre {
+    background: #0f172a;
+}
+
+.chat-bubble-ai code {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: 'Menlo', 'Monaco', monospace;
+}
+.dark .chat-bubble-ai code {
+    background: rgba(99, 102, 241, 0.2);
+}
+
+.chat-bubble-ai pre code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+}
+
+/* 移动端适配 */
+@media (max-width: 768px) {
+    .chat-bubble-ai {
+        max-width: 100%;
+    }
+}

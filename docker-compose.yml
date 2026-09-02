@@ -1,0 +1,74 @@
+version: "3.9"
+
+services:
+  # ===== 后端 API =====
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: ai-me-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - LLM_API_KEY=${LLM_API_KEY}
+      - LLM_BASE_URL=${LLM_BASE_URL}
+      - LLM_MODEL=${LLM_MODEL}
+      - EMBEDDING_API_KEY=${EMBEDDING_API_KEY}
+      - EMBEDDING_BASE_URL=${EMBEDDING_BASE_URL}
+      - EMBEDDING_MODEL=${EMBEDDING_MODEL}
+      - EMBEDDING_DIM=${EMBEDDING_DIM}
+      - INTENT_MODEL=${INTENT_MODEL}
+      - RERANK_API_KEY=${RERANK_API_KEY}
+      - RERANK_BASE_URL=${RERANK_BASE_URL}
+      - RERANK_MODEL=${RERANK_MODEL}
+      - MILVUS_DB_PATH=${MILVUS_DB_PATH}
+      - MILVUS_COLLECTION=${MILVUS_COLLECTION}
+      - LANGCHAIN_TRACING_V2=${LANGCHAIN_TRACING_V2}
+      - LANGCHAIN_API_KEY=${LANGCHAIN_API_KEY}
+      - LANGCHAIN_PROJECT=${LANGCHAIN_PROJECT}
+      - APP_HOST=${APP_HOST}
+      - APP_PORT=${APP_PORT}
+      - APP_DEBUG=${APP_DEBUG}
+      - MAX_INPUT_LENGTH=${MAX_INPUT_LENGTH}
+      - MAX_RETRIEVE_BLOCKS=${MAX_RETRIEVE_BLOCKS}
+      - RERANK_TOP_K=${RERANK_TOP_K}
+      - TEMPERATURE=${TEMPERATURE}
+      - ENABLE_RECOMMEND_QUESTION=${ENABLE_RECOMMEND_QUESTION}
+      - RATE_LIMIT_PER_MINUTE=${RATE_LIMIT_PER_MINUTE}
+      - RATE_LIMIT_BURST=${RATE_LIMIT_BURST}
+    volumes:
+      - ./backend/data:/app/backend/data
+      - ./backend/vector_db:/app/backend/vector_db
+      - ./backend/logs:/app/backend/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  # ===== 前端静态页面 =====
+  frontend:
+    image: nginx:alpine
+    container_name: ai-me-frontend
+    ports:
+      - "5500:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html:ro
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+  # ===== 可选：Redis（用于分布式会话存储）=====
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: ai-me-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+
+# volumes:
+#   redis_data:

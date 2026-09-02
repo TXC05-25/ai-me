@@ -1,0 +1,87 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+
+# ===== 环境变量 =====
+.env
+.env.local
+.env.*.local
+
+# ===== 向量库 =====
+backend/vector_db/
+*.sqlite3
+*.db
+
+# ===== 日志 =====
+backend/logs/
+*.log
+
+# ===== 评估输出 =====
+logs/
+
+# ===== 缓存 =====
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ===== IDE =====
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ===== 临时文件 =====
+tmp/
+temp/
+*.tmp
+*.bak
+*~
+
+# ===== 测试覆盖 =====
+.coverage
+htmlcov/
+.tox/
+
+# ===== 部署相关 =====
+*.pid
+*.sock
+
+# ===== 用户资料（敏感 · 仓库只保留 .sample 模板）=====
+# 真实候选人数据留在本地，clone 后从 .sample 复制再填写
+backend/data/profile.yaml
+backend/data/resume.md
+backend/data/qa_pairs.jsonl
+backend/data/projects/*.md
+!backend/data/projects/.gitkeep
+!backend/data/.gitkeep
+!backend/data/projects/*.sample
+!backend/data/*.sample
+
+# 前端的真实简历文件
+frontend/public/resume.pdf
+frontend/public/resume-preview.png
+!frontend/public/.gitkeep
+!frontend/public/*.sample
+
+# 备份文件
+backend/data/profile.yaml.bak
+backend/data/resume.md.bak
+
+# ===== 节点 =====
+node_modules/
+.next/
+out/
+
+# ===== 构建产物 =====
+dist/
+build/

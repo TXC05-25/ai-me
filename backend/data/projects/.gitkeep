@@ -1,0 +1,6 @@
+# 此目录用于存放候选人项目经历 Markdown
+#
+# 每个项目一个 .md 文件（如 ai_me.md / rag_graph.md 等）
+# 仓库里只提供 .sample 模板，真实内容请在 clone 后填入。
+#
+# 真实项目文件已在 .gitignore 中排除。
