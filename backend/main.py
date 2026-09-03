@@ -211,6 +211,33 @@ async def chat_stream(req: ChatRequest, request: Request):
             state.update(intent_result)
             yield f"event: intent\ndata: {json.dumps({'intent': intent_result.get('intent', 'profile_qa'), 'thinking': intent_result.get('thinking', ''), 'routed_query': intent_result.get('routed_query', '')}, ensure_ascii=False)}\n\n"
 
+            # 1.5 隐私/情感拦截：如果 intent 命中 refused，直接走 refuse_node，不进检索/生成链
+            if intent_result.get('intent') == 'refused':
+                from graph.nodes import refuse_node as _refuse_node
+                refuse_result = await _refuse_node(state)
+                state.update(refuse_result)
+                final = refuse_result.get('final_answer', {})
+                sample.total_ms = round((time.perf_counter() - start) * 1000, 1)
+                final_with_timing = {
+                    **final,
+                    'timing': {
+                        'intent_ms': sample.intent_ms,
+                        'rewrite_ms': sample.rewrite_ms,
+                        'retrieve_ms': sample.retrieve_ms,
+                        'rerank_ms': sample.rerank_ms,
+                        'assemble_ms': sample.assemble_ms,
+                        'generate_ms': sample.generate_ms,
+                        'ttft_ms': sample.first_token_ms,
+                        'total_ms': sample.total_ms,
+                    },
+                }
+                history.extend([
+                    {'role': 'user', 'content': req.question, 'ts': datetime.utcnow().isoformat()},
+                    {'role': 'assistant', 'content': final.get('answer', ''), 'ts': datetime.utcnow().isoformat()},
+                ])
+                yield f"event: done\ndata: {json.dumps(final_with_timing, ensure_ascii=False)}\n\n"
+                return  # 跳出 event_generator
+
             # 2. rewrite
             rewrite_result = await rewrite_node(state)
             state.update(rewrite_result)
