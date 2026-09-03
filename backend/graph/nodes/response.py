@@ -47,6 +47,38 @@ async def generate_node(state: dict) -> dict:
     # 综合判断：满足任一条件就降级
     degraded = top_score < 0.4 or is_short_question or empty_context
 
+    # 极低置信兜底：top_score 太低（< 0.15）且用户问的是项目/技能类问题时，
+    # 直接说「知识库没这条」而不是让 LLM 瞎编，避免幻觉
+    no_match_no_hallucinate = (
+        top_score < 0.15
+        and intent in {"project_detail", "skill_assessment"}
+        and not is_short_question
+        and not empty_context
+    )
+    if no_match_no_hallucinate:
+        log.info(f"[GENERATE] 知识库无命中 (top_score={top_score:.2f}, intent={intent})，直接兜底")
+        answer = (
+            "这个问题我知识库里暂时没有详细的资料 😅\n"
+            "你可以换个方向问，比如：\n"
+            "• 我最近在做哪个项目？\n"
+            "• RAG / LangGraph 的实现细节\n"
+            "• 我的技术栈和实习经历"
+        )
+        sample.token_count = len(answer)
+        log.info(f"[GENERATE] 兜底 answer_len={len(answer)} citations=0")
+        recommendations = await _gen_recommendations(history_str, question, answer)
+        return {
+            "answer": answer,
+            "citations": [],
+            "recommended_questions": recommendations,
+            "final_answer": {
+                "answer": answer,
+                "citations": [],
+                "recommended_questions": recommendations,
+                "intent": intent,
+            },
+        }
+
     if degraded:
         log.info(f"[GENERATE] 降级模式: top_score={top_score:.2f}, short={is_short_question}, empty_ctx={empty_context}")
         # 降级 prompt：基于简历 + 轻松风格
