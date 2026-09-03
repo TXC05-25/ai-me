@@ -164,11 +164,9 @@ scp "$L\backend\data\resume.md"      root@${IP}:/opt/ai-me/backend/data/resume.m
 scp "$L\backend\data\qa_pairs.jsonl" root@${IP}:/opt/ai-me/backend/data/qa_pairs.jsonl
 scp "$L\frontend\public\resume.pdf"  root@${IP}:/opt/ai-me/frontend/public/resume.pdf
 
-# 4 个项目 .md 文件
+# 2 个项目 .md 文件
 scp "$L\backend\data\projects\ai_me.md"   root@${IP}:/opt/ai-me/backend/data/projects/
-scp "$L\backend\data\projects\lanlan.md"  root@${IP}:/opt/ai-me/backend/data/projects/
 scp "$L\backend\data\projects\rag_graph.md" root@${IP}:/opt/ai-me/backend/data/projects/
-scp "$L\backend\data\projects\workbase.md" root@${IP}:/opt/ai-me/backend/data/projects/
 
 # 服务器侧给 .env 收紧权限
 ssh root@${IP} "chmod 600 /opt/ai-me/.env"

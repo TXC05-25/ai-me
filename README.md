@@ -149,9 +149,7 @@ ai-me/
 │   │   ├── resume.md              # ⭐ 简历全文
 │   │   ├── projects/              # 每个项目一份 Markdown 详情
 │   │   │   ├── ai_me.md           # 当前项目（AI-Me 数字分身）
-│   │   │   ├── lanlan.md          # 浙江省图书馆 AI 助手「澜澜」
-│   │   │   ├── rag_graph.md       # RAG 客服问答系统（LangGraph 版）
-│   │   │   └── workbase.md        # WorkBase 协作办公平台 · 版本测试
+│   │   │   └── rag_graph.md       # RAG 客服问答系统（LangGraph 版）
 │   │   └── qa_pairs.jsonl         # ⭐ 高频问答对
 │   ├── graph/                     # LangGraph 状态图
 │   │   ├── state.py               # 共享状态 TypedDict
@@ -368,19 +366,19 @@ ssh root@你的IP "cd /opt/ai-me && bash deploy.sh"
 ### 示例 2：实习追问
 
 ```
-👤 面试官：你在浙江省图书馆做的澜澜是干什么的？
+👤 面试官：你在杭州亿渡网络科技实习主要做什么？
 
-🤖 AI：候选人在杭州亿渡网络科技实习期间，参与了浙江省图书馆 AI 助手「澜澜」的开发 ⟪1⟫。
+🤖 AI：候选人在杭州亿渡网络科技有限公司做 AI 应用开发实习生（2026.07 - 至今）⟪1⟫。
 
-   核心特征：
-   - 多 Agent 协同工作流（LangGraph 编排）
-   - 混合检索：关键词 + 向量（解决图书馆藏检索歧义）
-   - Block 级召回：每条馆藏记录独立 block_id，可被精确定位
-   - SiliconFlow API + Stream API 实现流式响应
+   主要工作：
+   - 跟进 RAG + LangGraph 方向的 AI 应用
+   - 对接真实业务场景（亿渡是 AI Agent 方向的创业团队）
+   - 参与需求评审 / 技术选型 / 代码 review 的完整研发流程
+   - 实习期间也独立完成了 RAG 客服问答系统（LangGraph 版 · Block 级架构），召回率提升 28%，准确率提升 35% ⟪1⟫
 
 💡 推荐追问：
-   1. 多 Agent 之间是怎么划分的？怎么避免互相循环调用？
-   2. 「Block 级召回」具体比传统分块好在哪？
+   1. 你在实习中最有挑战的一个技术决策是什么？
+   2. 「Block 级细粒度检索」具体怎么实现的？
 ```
 
 ### 示例 3：工程能力

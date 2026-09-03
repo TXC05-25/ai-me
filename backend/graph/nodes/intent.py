@@ -36,7 +36,7 @@ REFUSE_KEYWORDS = [
 # 注意：顺序很重要！meta_question 关键词要更具体
 INTENT_KEYWORDS = {
     "meta_question": ["ai-me", "这个ai", "这个项目用", "这个项目怎么", "技术栈", "怎么部署", "架构", "设计哲学"],
-    "project_detail": ["做过", "做过什么", "最复杂", "最有挑战", "最难", "详细介绍", "langgraph", "rag 客服", "澜澜", "workbase", "哪个项目"],
+    "project_detail": ["做过", "做过什么", "最复杂", "最有挑战", "最难", "详细介绍", "langgraph", "rag 客服", "哪个项目"],
     "skill_assessment": ["原理", "怎么实现", "为什么", "什么是", "解释", "pagedattention", "flashattention", "agent", "tool calling", "如何选择", "区别"],
     "small_talk": ["你好", "hi", "hello", "嗨", "在吗", "干嘛", "谢谢", "再见"],
 }

@@ -98,8 +98,6 @@ def _build_degraded_prompt(question: str, history_str: str, intent: str) -> str:
 - 武汉华夏理工学院 2027 届本科应届毕业生（电子信息工程）
 - 杭州亿渡网络科技有限公司 AI 应用开发实习生
 - 独立完成 RAG 客服问答系统（LangGraph 版，准确率提升 35%）
-- 参与 AI 智能助手"澜澜"项目（浙江省图书馆）
-- 负责 WorkBase 协作办公平台测试
 - 正在做 AI-Me 项目（AI 数字分身作品集）
 
 【对话历史】
