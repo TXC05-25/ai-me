@@ -47,14 +47,13 @@ async def generate_node(state: dict) -> dict:
     # 综合判断：满足任一条件就降级
     degraded = top_score < 0.4 or is_short_question or empty_context
 
-    # 极低置信兜底：top_score 太低（< 0.15）且用户问的是项目/技能类问题时，
-    # 直接说「知识库没这条」而不是让 LLM 瞎编，避免幻觉
+    # 极低置信兜底：top_score 太低（< 0.2）→ 直接说「知识库没这条」而不是让 LLM 瞎编，避免幻觉
+    # 适用范围：project_detail / skill_assessment / profile_qa（项目/技能相关意图）
     no_match_no_hallucinate = (
-        top_score < 0.15
-        and intent in {"project_detail", "skill_assessment"}
-        and not is_short_question
-        and not empty_context
+        top_score < 0.2
+        and intent in {"project_detail", "skill_assessment", "profile_qa", "meta_question"}
     )
+    log.info(f"[GENERATE] top_score={top_score:.2f} intent={intent} hallucinate_guard={'ON' if no_match_no_hallucinate else 'OFF'}")
     if no_match_no_hallucinate:
         log.info(f"[GENERATE] 知识库无命中 (top_score={top_score:.2f}, intent={intent})，直接兜底")
         answer = (
