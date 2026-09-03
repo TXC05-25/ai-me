@@ -52,6 +52,7 @@ window.addEventListener('unhandledrejection', (e) => _debugError('unhandled reje
 function _init() {
   try { window.injectSvgIcons && window.injectSvgIcons(); } catch (e) { _debugError('svg failed', e); }
   try { initTheme(); } catch (e) { _debugError('theme failed', e); }
+  try { initDrawer(); } catch (e) { _debugError('drawer failed', e); }
   try { bindEvents(); } catch (e) { _debugError('bindEvents failed', e); }
   try { bindScrollListener(); } catch (e) { _debugError('bindScroll failed', e); }
   try { enableInternalScroll(); } catch (e) { _debugError('enableScroll failed', e); }
@@ -78,6 +79,53 @@ if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', _init);
 } else {
   _init();
+}
+
+// ===== 移动端抽屉（仅 < 768px 时启用） =====
+function initDrawer() {
+  const drawer = document.getElementById('bottom-drawer');
+  const backdrop = document.getElementById('drawer-backdrop');
+  const content = document.getElementById('drawer-content');
+  const toggleBtn = document.getElementById('drawer-toggle');
+  if (!drawer || !backdrop || !content || !toggleBtn) return;
+
+  // 把右栏内容搬进抽屉（只搬一次）
+  if (!content.dataset.moved) {
+    const source = document.querySelector('.col-right');
+    if (source) {
+      // 拷贝所有 child 节点（避免移动后 PC 端空）
+      Array.from(source.children).forEach(node => content.appendChild(node.cloneNode(true)));
+      content.dataset.moved = '1';
+      // 抽屉内 SVG 重新渲染
+      if (window.injectSvgIcons) window.injectSvgIcons();
+    }
+  }
+
+  const open = () => {
+    drawer.classList.add('open');
+    backdrop.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+  };
+  const close = () => {
+    drawer.classList.remove('open');
+    backdrop.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+  };
+
+  toggleBtn.addEventListener('click', () => {
+    drawer.classList.contains('open') ? close() : open();
+  });
+  backdrop.addEventListener('click', close);
+
+  // 抽屉内部点击按钮也会触发 close（比如点 "metrics-btn"）
+  content.addEventListener('click', (e) => {
+    if (e.target.closest('button, a')) close();
+  });
+
+  // 屏幕切回桌面，关闭抽屉
+  window.addEventListener('resize', () => {
+    if (window.innerWidth >= 768) close();
+  });
 }
 
 // ===== 主题 =====

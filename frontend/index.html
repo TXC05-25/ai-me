@@ -499,6 +499,94 @@
       .three-col { display: grid; grid-template-columns: 240px 1fr; gap: 16px; }
       .three-col .col-right { display: none; }
     }
+
+    /* ============ 手机端：< 768px ============ */
+    @media (max-width: 767px) {
+      /* 主区单列、左栏收起、右栏 drawer */
+      .three-col {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        height: auto;     /* 让页面整体可滚动，而不是内部滚动 */
+        min-height: 0;
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      /* 左栏：折叠为一个可展开的卡片 */
+      .col-left { order: 2; }
+
+      /* 中栏 chat：放最上面 + 占满宽度 */
+      .col-center {
+        order: 1;
+        height: auto;
+        min-height: 70vh;
+      }
+
+      /* 右栏：默认隐藏，唤起时作 drawer 从底部滑出 */
+      .col-right { display: none; }
+
+      /* Hero 区域紧凑 */
+      #welcome h2 { font-size: 1.25rem; }
+      #welcome p  { font-size: 0.8rem; }
+
+      /* chat 消息气泡：占满宽度，更紧凑 */
+      .chat-bubble-ai,
+      .chat-bubble-user { max-width: 95% !important; }
+
+      /* 输入框区域容许 keyboard 弹起时不遮挡 */
+      .fixed.bottom-0 { padding-bottom: env(safe-area-inset-bottom); }
+
+      /* 让"关于我"卡片在手机上更紧凑 */
+      .side-card { padding: 14px !important; }
+      .side-card h3 { font-size: 0.78rem; }
+
+      /* 抽屉容器 */
+      .drawer-backdrop {
+        position: fixed; inset: 0; z-index: 50;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(4px);
+        opacity: 0; pointer-events: none;
+        transition: opacity 0.18s ease;
+      }
+      .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+      .bottom-drawer {
+        position: fixed;
+        left: 0; right: 0; bottom: 0;
+        z-index: 60;
+        max-height: 80vh;
+        background: white;
+        border-top-left-radius: 18px;
+        border-top-right-radius: 18px;
+        box-shadow: 0 -8px 32px rgba(0,0,0,0.15);
+        transform: translateY(100%);
+        transition: transform 0.22s ease;
+        overflow-y: auto;
+        padding: 12px 14px calc(20px + env(safe-area-inset-bottom)) 14px;
+      }
+      .dark .bottom-drawer { background: #18181b; }
+      .bottom-drawer.open { transform: translateY(0); }
+      .drawer-handle {
+        width: 36px; height: 4px;
+        border-radius: 4px;
+        background: #d4d4d8;
+        margin: 4px auto 12px;
+      }
+      .dark .drawer-handle { background: #3f3f46; }
+
+      /* 顶栏抽屉按钮 */
+      .drawer-toggle { display: inline-flex !important; }
+
+      /* 顶部导航稍稍紧凑 */
+      header .max-w-6xl { padding-left: 12px; padding-right: 12px; }
+      header.h-12 { height: 48px; }
+
+      /* 底部输入框 max-width 拿掉，让它贴边 */
+      .fixed.bottom-0 .max-w-3xl { max-width: 100%; }
+    }
+
+    /* 抽屉按钮在 >= 768px 隐藏 */
+    .drawer-toggle { display: none; }
   </style>
 
   <script>
@@ -526,6 +614,9 @@
         <span class="text-xs text-zinc-400 hidden sm:inline">· 谭修诚</span>
       </div>
       <div class="flex items-center gap-1">
+        <button id="drawer-toggle" class="drawer-toggle p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800" title="更多">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
         <button id="theme-toggle" class="p-2 rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800" title="主题">
           <i data-svg="moon" class="w-4 h-4"></i>
         </button>
@@ -549,11 +640,8 @@
       <div class="side-card">
         <h3><i data-svg="user" class="w-3.5 h-3.5"></i> 关于我</h3>
         <h1 class="text-lg font-bold mb-1">谭修诚</h1>
-        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-1">
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3">
           27 届本科 · LLM 应用工程师
-        </p>
-        <p class="text-xs text-zinc-400 dark:text-zinc-500 mb-3">
-          实习于 AI Agent 初创
         </p>
         <div class="flex flex-wrap">
           <span class="tech-badge">LangGraph</span>
@@ -678,6 +766,14 @@
       </div>
     </aside>
   </main>
+
+  <!-- ===== 手机端底部抽屉（容纳 col-right 的内容）===== -->
+  <div id="drawer-backdrop" class="drawer-backdrop"></div>
+  <div id="bottom-drawer" class="bottom-drawer" aria-hidden="true">
+    <div class="drawer-handle"></div>
+    <!-- 抽屉内容由 JS 注入：直接把 col-right 移动过来 -->
+    <div id="drawer-content"></div>
+  </div>
 
   <!-- ===== 底部占位 spacer（高度 = 输入框区域；让页面滚到底时，固定输入框
        盖在这段空白上，不会遮挡真实内容） ===== -->
