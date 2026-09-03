@@ -18,6 +18,7 @@ from langgraph.graph import StateGraph, END
 from graph.nodes import (
     intent_node, rewrite_node, retrieve_node, rerank_node,
     assemble_context_node, generate_node, chat_node, meta_node, recommend_node,
+    refuse_node,
 )
 
 
@@ -25,11 +26,14 @@ def _route_by_intent(state: dict) -> str:
     """根据意图路由节点
 
     - recommend → recommend（推荐面试题）
+    - refused   → refuse（隐私话题，直接拒答）
     - 其他所有意图（包括 small_talk）→ rewrite（走检索链）
     """
     intent = state.get("intent", "profile_qa")
     if intent == "recommend":
         return "recommend"
+    if intent == "refused":
+        return "refuse"
     # small_talk 也走检索链：让 AI 至少能基于候选人信息回答"我是谁"
     return "rewrite"
 
@@ -48,6 +52,7 @@ def build_graph():
         ("generate", generate_node),
         ("chat", chat_node),
         ("meta", meta_node),
+        ("refuse", refuse_node),
         ("recommend", recommend_node),
     ]:
         workflow.add_node(name, fn)
@@ -58,7 +63,7 @@ def build_graph():
     # 意图分流
     workflow.add_conditional_edges(
         "intent", _route_by_intent,
-        {"chat": "chat", "recommend": "recommend", "rewrite": "rewrite"},
+        {"chat": "chat", "recommend": "recommend", "rewrite": "rewrite", "refuse": "refuse"},
     )
 
     # 主干：检索链 → 生成
@@ -68,7 +73,7 @@ def build_graph():
     workflow.add_edge("assemble_context", "generate")
 
     # 收尾
-    for node in ("generate", "chat", "meta", "recommend"):
+    for node in ("generate", "chat", "meta", "refuse", "recommend"):
         workflow.add_edge(node, END)
 
     return workflow.compile()

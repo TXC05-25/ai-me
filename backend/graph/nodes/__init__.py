@@ -2,7 +2,7 @@
 
 from .intent import intent_node
 from .retrieve import rewrite_node, retrieve_node, rerank_node, assemble_context_node
-from .response import generate_node, chat_node, meta_node
+from .response import generate_node, chat_node, meta_node, refuse_node
 from .recommend import recommend_node
 
 __all__ = [
@@ -14,5 +14,6 @@ __all__ = [
     "generate_node",
     "chat_node",
     "meta_node",
+    "refuse_node",
     "recommend_node",
 ]

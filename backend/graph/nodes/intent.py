@@ -20,8 +20,17 @@ from utils.logger import node_logger
 
 log = node_logger
 
-# 5 类意图
-VALID_INTENTS = {"profile_qa", "project_detail", "skill_assessment", "small_talk", "meta_question"}
+# 5 类意图 + 1 类隐私拒答
+VALID_INTENTS = {"profile_qa", "project_detail", "skill_assessment", "small_talk", "meta_question", "refused"}
+
+# 隐私/情感话题关键词 → 命中后直接拒绝回答
+REFUSE_KEYWORDS = [
+    "女朋友", "男友", "男朋友", "女友", "老婆", "老公", "媳妇",
+    "恋爱", "谈恋爱", "相亲", "对象", "暗恋", "喜欢谁",
+    "有没有对象", "有对象吗", "有女朋友", "有男朋友",
+    "有对象", "感情", "单身", "已婚", "未婚", "结婚", "离婚",
+    "前任", "分手", "出轨", "劈腿",
+]
 
 # 关键词启发（兜底，LLM 不可用时使用）
 # 注意：顺序很重要！meta_question 关键词要更具体
@@ -42,6 +51,15 @@ async def intent_node(state: dict) -> dict:
     question = state.get("question", "")
 
     with StageTimer(sample, "intent"):
+        # 0. 隐私/情感话题拦截 → 直接拒答（不检索、不调 LLM）
+        if _is_refused_question(question):
+            log.info(f"[INTENT-REFUSE] {question[:30]} -> refused")
+            return {
+                "intent": "refused",
+                "thinking": "(隐私话题，拒答)",
+                "routed_query": question,
+            }
+
         # 1. 先用关键词启发（兜底，毫秒级）
         keyword_intent = _keyword_intent(question)
 
@@ -101,3 +119,14 @@ def _keyword_intent(question: str) -> str:
             if kw in q:
                 return intent
     return "profile_qa"  # 默认
+
+
+def _is_refused_question(question: str) -> bool:
+    """检测是否属于隐私/情感话题（女友、恋爱、感情等）"""
+    if not question:
+        return False
+    q = question.lower()
+    for kw in REFUSE_KEYWORDS:
+        if kw in q:
+            return True
+    return False

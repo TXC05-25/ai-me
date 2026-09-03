@@ -65,8 +65,8 @@ git push hf main
 
 | Name | Type | Value |
 | --- | --- | --- |
-| `LLM_API_KEY` | Secret | MiniMax `sk-xxx` |
-| `EMBEDDING_API_KEY` | Secret | MiniMax `sk-xxx` |
+| `LLM_API_KEY` | Secret | DeepSeek `sk-xxx` |
+| `EMBEDDING_API_KEY` | Secret | OpenAI `sk-xxx`（或其他 Embedding 服务） |
 | `RERANK_API_KEY` | Secret | SiliconFlow `sk-xxx` |
 | `LANGCHAIN_API_KEY` | Secret | `lsv2_pt_xxx`（可选） |
 
@@ -148,8 +148,8 @@ vercel --prod
 | --- | --- | --- |
 | Vercel | **$0** | 100GB 流量/月（够用） |
 | Hugging Face Spaces CPU basic | **$0** | 16 小时/天运行（空闲会自动 sleep） |
-| MiniMax LLM | ¥1/百万 token | 校招 demo 月消耗 < ¥5 |
-| MiniMax Embedding | ¥0.5/百万 token | 重建向量库一次约 ¥0.1 |
+| DeepSeek LLM | ¥1-2/百万 token | 校招 demo 月消耗 < ¥5 |
+| OpenAI Embedding | $0.02/百万 token | 重建向量库一次约 $0.001 |
 | SiliconFlow Rerank | 免费额度 | |
 
 **总成本：¥5-10/月**（如果面试官偶尔访问）
@@ -171,7 +171,7 @@ vercel --prod
 **A**：查看 Build logs，常见原因：
 - 依赖缺失：检查 `requirements.txt`
 - 端口错误：HF 必须用 7860（已配置 `ENV APP_PORT=7860`）
-- 内存不足：Milvus Lite 首次构建索引会占用较多内存，CPU basic 有 16GB 应该够
+- 内存不足：ChromaDB 首次构建索引会占用较多内存，CPU basic 有 16GB 应该够
 
 ### Q2：前端 CORS 错误
 **A**：HF 后端默认允许所有 CORS（已在 `main.py` 配置）。如果还有问题：

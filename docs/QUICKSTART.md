@@ -1,6 +1,6 @@
 # 🚀 AI-Me · 5 分钟跑起来
 
-> 本指南假设你已经在 `C:\Users\谭修诚\Desktop\ai-me\` 目录。
+> 本指南假设你已经在项目根目录（克隆下来的 `ai-me/` 目录）。
 
 ## ✅ 前置条件检查
 
@@ -22,7 +22,7 @@ pip show fastapi langchain langgraph pydantic jieba rank-bm25 httpx | Select-Obj
 ## 📦 第一步：安装缺失依赖
 
 ```powershell
-cd C:\Users\谭修诚\Desktop\ai-me
+cd <项目根目录>
 
 # 安装两个核心缺失依赖
 pip install pymilvus loguru
@@ -74,17 +74,24 @@ notepad .env
 `.env` 中需要填的字段：
 
 ```env
-# MiniMax（LLM + Embedding）
-# 获取：https://api.minimax.chat/user-center/basic-information/interface-key
+# DeepSeek（LLM · OpenAI 兼容）
+# 获取：https://platform.deepseek.com/api_keys
 LLM_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+LLM_BASE_URL=https://api.deepseek.com/v1
+LLM_MODEL=deepseek-chat
+
+# Embedding（OpenAI 兼容服务，也可换智源 BGE / Cohere）
 EMBEDDING_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
+EMBEDDING_BASE_URL=https://api.openai.com/v1
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIM=1536
 
 # SiliconFlow（仅重排服务）
 # 获取：https://cloud.siliconflow.cn/account/ak
 RERANK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-> ⚠️ 其他字段保持默认值即可。`EMBEDDING_DIM` 默认 1536（MiniMax embo-01 的向量维度）。
+> ⚠️ 其他字段保持默认值即可。`EMBEDDING_DIM` 默认 1536（OpenAI `text-embedding-3-small` 的向量维度）。
 
 ---
 
@@ -92,17 +99,18 @@ RERANK_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxx
 
 ```powershell
 cd backend
-python -c "from utils.loader import build_knowledge_base; build_knowledge_base(force_rebuild=True)"
+python -m utils.loader
 ```
 
 应该看到类似输出：
 ```
+[INFO] 已删除旧 collection
 [INFO] 加载 X 个 Block（profile/resume/projects/blogs/qa_pairs/meta）
 [INFO] 共 X 个 Block，开始向量化...
-[INFO] ✅ 向量化完成，共 X 个 Block 写入 Milvus
+[INFO] ✅ ChromaDB 构建完成，共 X 个 Block
 ```
 
-**向量库文件位置**：`backend/vector_db/milvus.db`
+**向量库文件位置**：`backend/vector_db/chroma/`
 
 ---
 
@@ -112,7 +120,7 @@ python -c "from utils.loader import build_knowledge_base; build_knowledge_base(f
 
 **窗口 1 — 启动后端**
 ```powershell
-cd C:\Users\谭修诚\Desktop\ai-me\backend
+cd <项目根目录>\backend
 python main.py
 ```
 
@@ -121,12 +129,12 @@ python main.py
 INFO:     Started server process [xxxx]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
-INFO:     Uvicorn running on http://0.0.0.0:8000
+INFO:     Uvicorn running on http://0.0.0.0:8001
 ```
 
 **窗口 2 — 启动前端**
 ```powershell
-cd C:\Users\谭修诚\Desktop\ai-me\frontend
+cd <项目根目录>\frontend
 python -m http.server 5500
 ```
 
@@ -142,10 +150,10 @@ Serving HTTP on 0.0.0.0 port 5500 (http://0.0.0.0:5500/)
 | 链接 | 说明 |
 | --- | --- |
 | <http://localhost:5500> | 🌐 AI 数字分身主页 |
-| <http://localhost:8000/docs> | 📚 FastAPI 自动生成的 API 文档 |
-| <http://localhost:8000/health> | ❤️ 健康检查端点 |
-| <http://localhost:8000/profile> | 👤 候选人信息（JSON） |
-| <http://localhost:8000/projects> | 🚀 项目列表（JSON） |
+| <http://localhost:8001/docs> | 📚 FastAPI 自动生成的 API 文档 |
+| <http://localhost:8001/health> | ❤️ 健康检查端点 |
+| <http://localhost:8001/profile> | 👤 候选人信息（JSON） |
+| <http://localhost:8001/projects> | 🚀 项目列表（JSON） |
 
 **测试对话**（在前端聊天框输入）：
 1. `请介绍一下你自己`
@@ -167,8 +175,8 @@ A: 没装 loguru，运行 `pip install loguru`
 ### Q3: `401 Unauthorized` / `Invalid API Key`
 A: `.env` 中的 API Key 错误或缺失。检查 `LLM_API_KEY`、`EMBEDDING_API_KEY`、`RERANK_API_KEY` 是否填入有效值。
 
-### Q4: Milvus Lite 启动慢
-A: 首次启动会创建索引文件，耗时 5-15 秒。后续启动 < 1 秒。
+### Q4: ChromaDB 启动慢
+A: 首次启动会创建索引文件，耗时 1-3 秒。后续启动 < 1 秒。
 
 ### Q5: 前端能打开但聊天不工作
 A: 打开浏览器开发者工具（F12）→ Console 看错误：
@@ -182,10 +190,23 @@ A:
 3. 调整 `config.py` 中的 `MAX_RETRIEVE_BLOCKS`（如改为 15）
 
 ### Q7: 想换 LLM 模型
-A: 编辑 `.env` 中的 `LLM_MODEL`：
+A: 编辑 `.env` 中的 `LLM_BASE_URL` 和 `LLM_MODEL`（所有 OpenAI 兼容服务都可以）：
 ```env
-LLM_MODEL=abab6.5s-chat       # 默认，中文表现好
-LLM_MODEL=abab7-chat          # 更强（如果有权限）
+# DeepSeek（默认）
+LLM_BASE_URL=https://api.deepseek.com/v1
+LLM_MODEL=deepseek-chat
+
+# 智谱 GLM
+LLM_BASE_URL=https://open.bigmodel.cn/api/paas/v4
+LLM_MODEL=glm-4-flash
+
+# 通义千问
+LLM_BASE_URL=https://dashscope.aliyuncs.com/compatible-mode/v1
+LLM_MODEL=qwen-turbo
+
+# MiniMax
+LLM_BASE_URL=https://api.minimax.chat/v1
+LLM_MODEL=abab6.5s-chat
 ```
 
 ### Q8: 想加 LangSmith 追踪
@@ -202,7 +223,7 @@ LANGCHAIN_PROJECT=ai-me
 
 跑通后，逐项确认：
 
-- [ ] 后端启动无报错，监听 8000 端口
+- [ ] 后端启动无报错，监听 8001 端口
 - [ ] 前端启动无报错，监听 5500 端口
 - [ ] 打开 <http://localhost:5500> 看到 Hero 页面
 - [ ] 聊天框输入问题，AI 能在 3 秒内回复
@@ -211,6 +232,7 @@ LANGCHAIN_PROJECT=ai-me
 - [ ] 切换暗色 / 亮色主题正常
 - [ ] 「导出对话」按钮能下载 Markdown
 - [ ] 「清空」按钮能清空对话
+- [ ] 问「你在学校担任哪些职位」能正确返回**导员助理**和**艺术团团长**（验证知识库）
 
 全部 ✅ = 项目跑通！
 
@@ -225,12 +247,12 @@ LANGCHAIN_PROJECT=ai-me
 # 下载：https://www.docker.com/products/docker-desktop
 
 # 2. 在项目根目录运行
-cd C:\Users\谭修诚\Desktop\ai-me
+cd <项目根目录>
 docker compose up
 
 # 3. 访问
 # 前端：http://localhost:5500
-# 后端：http://localhost:8000
+# 后端：http://localhost:8001
 ```
 
 ---

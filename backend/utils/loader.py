@@ -176,10 +176,30 @@ def yaml_to_markdown(profile: dict) -> str:
             )
         elif isinstance(value, list):
             lines.append(f"\n## {_format_key(key)}\n")
-            for item in value:
+            for idx, item in enumerate(value, 1):
                 if isinstance(item, dict):
+                    lines.append(f"\n### {_format_key(key)} #{idx}\n")
                     for k, v in item.items():
-                        lines.append(f"- **{_format_key(k)}**: {v}")
+                        if isinstance(v, list):
+                            lines.append(f"- **{_format_key(k)}**:")
+                            for sub in v:
+                                if isinstance(sub, dict):
+                                    lines.append("  - " + " | ".join(
+                                        f"{_format_key(sk)}: {sv}" for sk, sv in sub.items()
+                                    ))
+                                else:
+                                    lines.append(f"  - {sub}")
+                        elif isinstance(v, dict):
+                            lines.append(f"- **{_format_key(k)}**:")
+                            for sk, sv in v.items():
+                                if isinstance(sv, list):
+                                    lines.append(f"  - **{_format_key(sk)}**:")
+                                    for ssub in sv:
+                                        lines.append(f"    - {ssub}")
+                                else:
+                                    lines.append(f"  - **{_format_key(sk)}**: {sv}")
+                        else:
+                            lines.append(f"- **{_format_key(k)}**: {v}")
                 else:
                     lines.append(f"- {item}")
         else:

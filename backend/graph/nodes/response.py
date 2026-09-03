@@ -149,6 +149,37 @@ async def chat_node(state: dict) -> dict:
     return await generate_node(state)
 
 
+async def refuse_node(state: dict) -> dict:
+    """隐私/情感话题：礼貌拒绝回答，不检索、不调 LLM"""
+    question = state.get("question", "")
+    log.info(f"[REFUSE] 已拦截敏感问题: {question[:30]}")
+    answer = (
+        "这个问题属于个人隐私，我不太方便聊 🙂\n"
+        "我们还是回到技术、项目或者学习这些话题吧——"
+        "比如你可以问我：\n"
+        "• 你最近在做哪个项目？\n"
+        "• RAG / LangGraph 的实现细节\n"
+        "• 你的技术栈和实习经历"
+    )
+    return {
+        "answer": answer,
+        "citations": [],
+        "recommended_questions": [
+            {"question": "你最近在做哪个项目？", "intent": "project_detail"},
+            {"question": "介绍一下 RAG 系统的实现细节", "intent": "skill_assessment"},
+        ],
+        "final_answer": {
+            "answer": answer,
+            "citations": [],
+            "recommended_questions": [
+                {"question": "你最近在做哪个项目？", "intent": "project_detail"},
+                {"question": "介绍一下 RAG 系统的实现细节", "intent": "skill_assessment"},
+            ],
+            "intent": "refused",
+        },
+    }
+
+
 @retry_with_backoff(max_attempts=2)
 async def meta_node(state: dict) -> dict:
     """回答关于本项目架构 / 部署 / 设计哲学的问题"""
