@@ -77,6 +77,13 @@ frontend/public/resume-preview.png
 backend/data/profile.yaml.bak
 backend/data/resume.md.bak
 
+# ===== 一键部署脚本（本地用，不进公开仓库）=====
+push.ps1
+push-with-mirror.ps1
+setup-ssh-push.ps1
+fix-and-push.ps1
+push-now.ps1
+
 # ===== 节点 =====
 node_modules/
 .next/

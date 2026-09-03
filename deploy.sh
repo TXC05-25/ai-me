@@ -22,18 +22,32 @@ fail()  { echo -e "${RED}[FAIL]${NC} $*"; exit 1; }
 # 0. 检查 root
 [[ $EUID -ne 0 ]] && fail "请用 root 运行：sudo bash deploy.sh"
 
-# 1. 安装 Docker
+# 1. 安装 Docker（优先从 apt/docker.io 走，避开 get.docker.com 443 阻断）
 if ! command -v docker &>/dev/null; then
   log "安装 Docker..."
-  curl -fsSL https://get.docker.com -o get-docker.sh
-  sh get-docker.sh
+  # 1.1 优先尝试阿里云 apt 镜像（国内 ECS 最快）
+  if grep -q "mirrors.aliyun.com" /etc/apt/sources.list 2>/dev/null \
+     || [ -d /etc/apt/sources.list.d ] && grep -rq "mirrors.aliyun.com" /etc/apt/sources.list.d/ 2>/dev/null; then
+    log "  - 检测到阿里云 apt 镜像，跳过 sources.list 替换"
+  else
+    log "  - 把 apt 源切到阿里云镜像"
+    cp /etc/apt/sources.list /etc/apt/sources.list.bak 2>/dev/null || true
+    sed -i 's|http://archive.ubuntu.com|https://mirrors.aliyun.com|g' /etc/apt/sources.list
+    sed -i 's|http://security.ubuntu.com|https://mirrors.aliyun.com|g' /etc/apt/sources.list
+  fi
+
+  apt-get update -o Acquire::Retries=2
+  DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+      ca-certificates curl gnupg docker.io docker-compose-plugin
+
   systemctl enable docker
-  rm get-docker.sh
+  systemctl start docker || true
 fi
 
+# 1.bis 补一次验证（apt 装的 "docker.io" 提供 docker，但 "docker compose" 子命令可能还没生效）
 if ! docker compose version &>/dev/null; then
-  log "安装 docker-compose plugin..."
-  apt-get install -y docker-compose-plugin || pip install docker-compose
+  log "  - 补装 docker-compose"
+  apt-get install -y --no-install-recommends docker-compose-plugin || true
 fi
 
 # 2. 克隆/更新代码（公开仓库）
