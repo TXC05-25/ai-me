@@ -84,6 +84,17 @@ setup-ssh-push.ps1
 fix-and-push.ps1
 push-now.ps1
 
+# ===== 本地调试 / SSH 助手脚本（不进公开仓库）=====
+check_sshconfig.ps1
+fix_sshconfig.ps1
+# 根目录临时调试脚本（PowerShell + Python）
+/*.ps1
+/test_*.py
+/check-*.py
+/run-*.py
+/final_test.py
+daemon.json
+
 # ===== 节点 =====
 node_modules/
 .next/
