@@ -47,12 +47,15 @@ async def generate_node(state: dict) -> dict:
     # 综合判断：满足任一条件就降级
     degraded = top_score < 0.4 or is_short_question or empty_context
 
-    # 极低置信兜底：top_score 太低（< 0.7）→ 直接说「知识库没这条」而不是让 LLM 瞎编
-    #   只有意图相关（RAG 类意图）才触发
-    #   small_talk 不触发（聊天本来就不需要严格召回）
+    # 极低置信兜底：top_score 极低（< 0.2，且意图相关）→ 直接说「知识库没这条」
+    #   避免 LLM 凭先验知识瞎编不存在的项目
+    #   注意：BGE-Reranker 对「你最近在做哪个项目」这种抽象问题会给低分（~0.10）
+    #   所以阈值不能太高；「澜澜是什么」类伪幻觉 top_score 通常 < 0.05，0.05 是安全阈值
     no_match_no_hallucinate = (
-        top_score < 0.7
+        top_score < 0.05
         and intent in {"project_detail", "skill_assessment", "profile_qa", "meta_question"}
+        and not is_short_question
+        and not empty_context
     )
     log.info(f"[GENERATE] top_score={top_score:.2f} intent={intent} hallucinate_guard={'ON' if no_match_no_hallucinate else 'OFF'}")
     if no_match_no_hallucinate:
