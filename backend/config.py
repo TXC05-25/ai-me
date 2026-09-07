@@ -28,10 +28,15 @@ LOGS_DIR = ROOT_DIR / "backend" / "logs"
 for d in [VECTOR_DB_DIR, LOGS_DIR]:
     d.mkdir(parents=True, exist_ok=True)
 
-# ===== LLM =====
+# ===== LLM（主模型）=====
 LLM_API_KEY = os.getenv("LLM_API_KEY", "")
 LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://api.deepseek.com/v1")
 LLM_MODEL = os.getenv("LLM_MODEL", "deepseek-chat")
+
+# ===== LLM（备用模型，主模型连接失败时自动切换）=====
+LLM_FALLBACK_API_KEY = os.getenv("LLM_FALLBACK_API_KEY", LLM_API_KEY)
+LLM_FALLBACK_BASE_URL = os.getenv("LLM_FALLBACK_BASE_URL", LLM_BASE_URL)
+LLM_FALLBACK_MODEL = os.getenv("LLM_FALLBACK_MODEL", "deepseek-chat")
 
 # ===== Embedding =====
 EMBEDDING_API_KEY = os.getenv("EMBEDDING_API_KEY", "")
