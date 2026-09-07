@@ -94,6 +94,9 @@ fix_sshconfig.ps1
 /run-*.py
 /final_test.py
 daemon.json
+# SSH 救援脚本（含服务器/家庭 IP，仅本地保留）
+scripts/sshd-rescue.sh
+scripts/drop-port22.sh
 
 # ===== 节点 =====
 node_modules/
